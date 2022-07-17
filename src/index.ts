@@ -1,16 +1,15 @@
 import { KeyDisplay } from './utils';
 import { CharacterControls } from './characterControls';
 import * as THREE from 'three'
-import { CameraHelper } from 'three';
+import { Camera, CameraHelper, PerspectiveCamera, Scene } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 // SCENE
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xa8def0);
+const scene: any = new THREE.Scene()
 
 // CAMERA
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.y = 5;
 camera.position.z = 5;
 camera.position.x = 0;
@@ -36,21 +35,52 @@ light()
 // FLOOR
 generateFloor()
 
+new GLTFLoader().load('models/Building.glb', function (gltf) {
+    const model = gltf.scene;
+    scene.add(model);
+});
+
+new GLTFLoader().load('models/buildingNavMesh.glb', function (gltf) {
+    const model = gltf.scene;
+    scene.add(model);
+});
+
 // MODEL WITH ANIMATIONS
 var characterControls: CharacterControls
-new GLTFLoader().load('models/Soldier.glb', function (gltf) {
+new GLTFLoader().load('models/female/readyFemale.glb', function (gltf) {
     const model = gltf.scene;
     model.traverse(function (object: any) {
         if (object.isMesh) object.castShadow = true;
     });
     scene.add(model);
 
-    const gltfAnimations: THREE.AnimationClip[] = gltf.animations;
     const mixer = new THREE.AnimationMixer(model);
     const animationsMap: Map<string, THREE.AnimationAction> = new Map()
-    gltfAnimations.filter(a => a.name != 'TPose').forEach((a: THREE.AnimationClip) => {
-        animationsMap.set(a.name, mixer.clipAction(a))
-    })
+
+    new GLTFLoader().load('models/female/readyIdleFemale.glb', function (gltf) {
+        const animationAction = mixer.clipAction((gltf as any).animations[0])
+        animationsMap.set('Idle', animationAction)
+    });
+    
+    new GLTFLoader().load('models/female/readyWalkingFemaleInPlace.glb', function (gltf) {
+        const animationAction = mixer.clipAction((gltf as any).animations[0])
+        animationsMap.set('Walk', animationAction)
+    });
+    
+    new GLTFLoader().load('models/female/readySlowRunFemaleInPlace.glb', function (gltf) {
+        const animationAction = mixer.clipAction((gltf as any).animations[0])
+        animationsMap.set('Run', animationAction)
+    });
+
+    new GLTFLoader().load('models/female/readySillyDancingFemale.glb', function (gltf) {
+        const animationAction = mixer.clipAction((gltf as any).animations[0])
+        animationsMap.set('Dance', animationAction)
+    });
+
+    new GLTFLoader().load('models/female/readyStandingClapFemale.glb', function (gltf) {
+        const animationAction = mixer.clipAction((gltf as any).animations[0])
+        animationsMap.set('Clap', animationAction)
+    });
 
     characterControls = new CharacterControls(model, mixer, animationsMap, orbitControls, camera,  'Idle')
 });
@@ -97,29 +127,29 @@ window.addEventListener('resize', onWindowResize);
 function generateFloor() {
     // TEXTURES
     const textureLoader = new THREE.TextureLoader();
-    const placeholder = textureLoader.load("./textures/placeholder/placeholder.png");
-    const sandBaseColor = textureLoader.load("./textures/sand/Sand 002_COLOR.jpg");
-    const sandNormalMap = textureLoader.load("./textures/sand/Sand 002_NRM.jpg");
-    const sandHeightMap = textureLoader.load("./textures/sand/Sand 002_DISP.jpg");
-    const sandAmbientOcclusion = textureLoader.load("./textures/sand/Sand 002_OCC.jpg");
+    //const placeholder = textureLoader.load("./textures/placeholder/placeholder.png");
+    //const sandBaseColor = textureLoader.load("./textures/sand/Sand 002_COLOR.jpg");
+    //const sandNormalMap = textureLoader.load("./textures/sand/Sand 002_NRM.jpg");
+    //const sandHeightMap = textureLoader.load("./textures/sand/Sand 002_DISP.jpg");
+    //const sandAmbientOcclusion = textureLoader.load("./textures/sand/Sand 002_OCC.jpg");
 
     const WIDTH = 80
     const LENGTH = 80
 
     const geometry = new THREE.PlaneGeometry(WIDTH, LENGTH, 512, 512);
-    const material = new THREE.MeshStandardMaterial(
-        {
-            map: sandBaseColor, normalMap: sandNormalMap,
-            displacementMap: sandHeightMap, displacementScale: 0.1,
-            aoMap: sandAmbientOcclusion
-        })
-    wrapAndRepeatTexture(material.map)
-    wrapAndRepeatTexture(material.normalMap)
-    wrapAndRepeatTexture(material.displacementMap)
-    wrapAndRepeatTexture(material.aoMap)
+    //const material = new THREE.MeshStandardMaterial(
+    //    {
+    //        map: sandBaseColor, normalMap: sandNormalMap,
+    //        displacementMap: sandHeightMap, displacementScale: 0.1,
+    //        aoMap: sandAmbientOcclusion
+    //    })
+    //wrapAndRepeatTexture(material.map)
+    //wrapAndRepeatTexture(material.normalMap)
+    //wrapAndRepeatTexture(material.displacementMap)
+    //wrapAndRepeatTexture(material.aoMap)
     // const material = new THREE.MeshPhongMaterial({ map: placeholder})
 
-    const floor = new THREE.Mesh(geometry, material)
+    const floor = new THREE.Mesh(geometry)
     floor.receiveShadow = true
     floor.rotation.x = - Math.PI / 2
     scene.add(floor)

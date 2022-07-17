@@ -1,15 +1,21 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>three.js example</title>
-    <style>
-      body {
-        margin: 0px;
-      }
-    </style>
-  </head>
-  <body>
-    <script src="index.js"></script>
-  </body>
+
+<head>
+  <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+  <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+</head>
+
+<body>
+  <a-scene inspector-plugin-recast>
+    <a-entity id="Rig" position="0 0 5" movement-controls="constrainToNavMesh:true">
+      <a-entity camera position="0 1.5 0" look-controls></a-entity>
+    </a-entity>
+
+    <a-gltf-model src="models/Building.glb"></a-gltf-model>
+    <a-gltf-model src="models/buildingNavMesh.glb" nav-mesh></a-gltf-model>
+
+  </a-scene>
+</body>
+
 </html>

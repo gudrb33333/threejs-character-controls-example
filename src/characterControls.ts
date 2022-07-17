@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { A, D, DIRECTIONS, S, W } from './utils'
+import { A, D, DIRECTIONS, S, W, DANCE, CLAP } from './utils'
 
 
 export class CharacterControls {
@@ -50,15 +50,21 @@ export class CharacterControls {
 
     public update(delta: number, keysPressed: any) {
         const directionPressed = DIRECTIONS.some(key => keysPressed[key] == true)
+        const DanceKeyPressed = DANCE.some(key => keysPressed[key] == true)
+        const ClapKeyPressed = CLAP.some(key => keysPressed[key] == true)
 
         var play = '';
         if (directionPressed && this.toggleRun) {
             play = 'Run'
         } else if (directionPressed) {
             play = 'Walk'
+        } else if (DanceKeyPressed) {
+            play = 'Dance'
+        } else if (ClapKeyPressed) {
+            play = 'Clap'
         } else {
             play = 'Idle'
-        }
+        } 
 
         if (this.currentAction != play) {
             const toPlay = this.animationsMap.get(play)
@@ -96,16 +102,16 @@ export class CharacterControls {
             // move model & camera
             const moveX = this.walkDirection.x * velocity * delta
             const moveZ = this.walkDirection.z * velocity * delta
-            this.model.position.x += moveX
-            this.model.position.z += moveZ
+            this.model.position.x -= moveX
+            this.model.position.z -= moveZ
             this.updateCameraTarget(moveX, moveZ)
         }
     }
 
     private updateCameraTarget(moveX: number, moveZ: number) {
         // move camera
-        this.camera.position.x += moveX
-        this.camera.position.z += moveZ
+        this.camera.position.x -= moveX
+        this.camera.position.z -= moveZ
 
         // update camera target
         this.cameraTarget.x = this.model.position.x
@@ -117,23 +123,23 @@ export class CharacterControls {
     private directionOffset(keysPressed: any) {
         var directionOffset = 0 // w
 
-        if (keysPressed[W]) {
-            if (keysPressed[A]) {
+        if (keysPressed[S]) {
+            if (keysPressed[D]) {
                 directionOffset = Math.PI / 4 // w+a
-            } else if (keysPressed[D]) {
+            } else if (keysPressed[A]) {
                 directionOffset = - Math.PI / 4 // w+d
             }
-        } else if (keysPressed[S]) {
-            if (keysPressed[A]) {
+        } else if (keysPressed[W]) {
+            if (keysPressed[D]) {
                 directionOffset = Math.PI / 4 + Math.PI / 2 // s+a
-            } else if (keysPressed[D]) {
+            } else if (keysPressed[A]) {
                 directionOffset = -Math.PI / 4 - Math.PI / 2 // s+d
             } else {
                 directionOffset = Math.PI // s
             }
-        } else if (keysPressed[A]) {
-            directionOffset = Math.PI / 2 // a
         } else if (keysPressed[D]) {
+            directionOffset = Math.PI / 2 // a
+        } else if (keysPressed[A]) {
             directionOffset = - Math.PI / 2 // d
         }
 

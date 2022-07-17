@@ -2,8 +2,12 @@ export const W = 'w'
 export const A = 'a'
 export const S = 's'
 export const D = 'd'
+export const Z = 'z'
+export const C = 'c'
 export const SHIFT = 'shift'
 export const DIRECTIONS = [W, A, S, D]
+export const DANCE = [Z]
+export const CLAP = [C]
 
 export class KeyDisplay {
 
@@ -14,12 +18,16 @@ export class KeyDisplay {
         const a: HTMLDivElement = document.createElement("div")
         const s: HTMLDivElement = document.createElement("div")
         const d: HTMLDivElement = document.createElement("div")
+        const z: HTMLDivElement = document.createElement("div")
+        const c: HTMLDivElement = document.createElement("div")
         const shift: HTMLDivElement = document.createElement("div")
 
         this.map.set(W, w)
         this.map.set(A, a)
         this.map.set(S, s)
         this.map.set(D, d)
+        this.map.set(Z, z)
+        this.map.set(C, c)
         this.map.set(SHIFT, shift)
 
         this.map.forEach( (v, k) => {
@@ -42,12 +50,16 @@ export class KeyDisplay {
         this.map.get(A).style.top = `${window.innerHeight - 100}px`
         this.map.get(S).style.top = `${window.innerHeight - 100}px`
         this.map.get(D).style.top = `${window.innerHeight - 100}px`
+        this.map.get(Z).style.top = `${window.innerHeight - 100}px`
+        this.map.get(C).style.top = `${window.innerHeight - 100}px`
         this.map.get(SHIFT).style.top = `${window.innerHeight - 100}px`
 
         this.map.get(W).style.left = `${300}px`
         this.map.get(A).style.left = `${200}px`
         this.map.get(S).style.left = `${300}px`
         this.map.get(D).style.left = `${400}px`
+        this.map.get(Z).style.left = `${500}px`
+        this.map.get(C).style.left = `${600}px`
         this.map.get(SHIFT).style.left = `${50}px`
     }
 
